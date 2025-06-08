@@ -24,7 +24,7 @@ DECLSPEC u64x MurmurHash (const u64x seed, PRIVATE_AS const u32x *w, const u32 p
   const u32 blocks = pw_len / 8;
 
   if (pw_len >= 8) {
-    for (u32 i = 0; i < blocks * 2; i++) {
+    for (u32 i = 0; i < blocks; i++) {
       const u64x tmp = ((((u64)w[2 * i + 1]) << 32) | w[2 * i]) * M;
       hash = (hash ^ ((tmp ^ (tmp >> R)) * M)) * M;
     }
