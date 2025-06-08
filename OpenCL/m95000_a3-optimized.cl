@@ -11,7 +11,6 @@
 #include M2S(INCLUDE_PATH/inc_platform.cl)
 #include M2S(INCLUDE_PATH/inc_common.cl)
 #include M2S(INCLUDE_PATH/inc_simd.cl)
-#include M2S(INCLUDE_PATH/inc_hash_md5.cl)
 #endif
 
 DECLSPEC u64x MurmurHash (const u64x seed, PRIVATE_AS const u32x *w, const u32 pw_len)
