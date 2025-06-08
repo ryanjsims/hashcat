@@ -10,7 +10,7 @@
 #include "convert.h"
 #include "shared.h"
 
-static const u32   ATTACK_EXEC    = ATTACK_EXEC_OUTSIDE_KERNEL;
+static const u32   ATTACK_EXEC    = ATTACK_EXEC_INSIDE_KERNEL;
 static const u32   DGST_POS0      = 0;
 static const u32   DGST_POS1      = 1;
 static const u32   DGST_POS2      = 2;
@@ -19,10 +19,10 @@ static const u32   DGST_SIZE      = DGST_SIZE_8_2;
 static const u32   HASH_CATEGORY  = HASH_CATEGORY_RAW_CHECKSUM;
 static const char *HASH_NAME      = "MurmurHash64a";
 static const u64   KERN_TYPE      = 95000;
-static const u32   OPTI_TYPE      = OPTI_TYPE_ZERO_BYTE 
+static const u32   OPTI_TYPE      = OPTI_TYPE_OPTIMIZED_KERNEL
+                                  | OPTI_TYPE_ZERO_BYTE 
                                   | OPTI_TYPE_USES_BITS_64;
-static const u64   OPTS_TYPE      = OPTS_TYPE_PT_GENERATE_LE
-                                  | OPTS_TYPE_SUGGEST_KG;
+static const u64   OPTS_TYPE      = OPTS_TYPE_PT_GENERATE_LE;
 static const u32   SALT_TYPE      = SALT_TYPE_NONE;
 static const char *ST_PASS        = "hashcat";
 static const char *ST_HASH        = "73f8142b4326d36a";

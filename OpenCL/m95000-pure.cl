@@ -78,48 +78,32 @@ KERNEL_FQ void m95000_comp (KERN_ATTR_TMPS (murmur64a_tmp_t))
   if (gid >= GID_CNT) return;
 
   const u64 seed = 0;
-  const u64 mix = 0xc6a4a7935bd1e995;
+  #define mix 0xc6a4a7935bd1e995
 
   u64 hash = seed ^ ((u64)tmps[gid].byte_length * mix);
 
-  int i;
-  // printf("\n");
-  for (i = 0; tmps[gid].byte_length - i >= 8; i += 8)
-  {
-    u64 key = tmps[gid].password_buf[i / 8];
-
-    key *= mix;
-    key ^= key >> SHIFTS;
-    key *= mix;
-
-    hash ^= key;
-    hash *= mix;
-
-    // printf("i = % 3d  hash = %08x%08x  key = %08x%08x\n", i, h32_from_64(hash), l32_from_64(hash), h32_from_64(key), l32_from_64(key));
-  }
-
-  if (tmps[gid].byte_length - i > 0) {
-    GLOBAL_AS const u8 *password_bytes = ((GLOBAL_AS const u8 *) tmps[gid].password_buf) + i;
-    for (int j = tmps[gid].byte_length - i - 1; j >= 0; j--)
-    {
-      hash ^= (u64)password_bytes[j] << (8 * j);
-      // printf("j = % 3d  hash = %08x%08x\n", j, h32_from_64(hash), l32_from_64(hash));
+  const u32 blocks = tmps[gid].byte_length / 8;
+  if (tmps[gid].byte_length >= 8) {
+    for (u32 i = 0; i < blocks; i++) {
+      const u64 tmp = tmps[gid].password_buf[i] * mix;
+      hash = (hash ^ (tmp ^ (tmp >> SHIFTS)) * mix) * mix;
     }
-    hash *= mix;
-    // printf("i = % 3d  hash = %08x%08x\n", i, h32_from_64(hash), l32_from_64(hash));
   }
 
-  hash ^= hash >> SHIFTS;
+  if (tmps[gid].byte_length % 8 > 0) {
+    const u64 tmp = tmps[gid].password_buf[blocks];
+    hash ^= tmp;
+    hash = hash * mix;
+  }
 
-  hash *= mix;
-  hash ^= hash >> SHIFTS;
-
+  hash = hash ^ (hash >> SHIFTS);
+  hash = hash * mix;
+  hash = hash ^ (hash >> SHIFTS);
 
   const u32 r0 = l32_from_64(hash);
   const u32 r1 = h32_from_64(hash);
   const u32 r2 = 0;
   const u32 r3 = 0;
-  // printf("hash = %08x%08x\n", r1, r0);
 
   #define il_pos 0
 
@@ -127,3 +111,7 @@ KERNEL_FQ void m95000_comp (KERN_ATTR_TMPS (murmur64a_tmp_t))
   #include COMPARE_M
   #endif
 }
+
+// 0074616368736168
+// 0074000000000000
+// 
